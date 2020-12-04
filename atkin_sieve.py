@@ -80,7 +80,7 @@ import math
       c) The procedure described in a) is also done for n = 3x^2 - y^2 and n % 12 == 11. If so, n can be written as 
          n = 11 + 12 Z (see theorem 11 above). 
     - After all (x, y) have been checked, we have is_prime[n] == True if there were an odd number of solutions and 
-       is_prime[n] == False if there were an even number of solutions.
+      is_prime[n] == False if there were an even number of solutions.
     - All n for which is_prime[n] == False are NOT primes. This includes all even numbers (that were initialized to 
       False and never touched, and all n that could not be expressed as (1), (2) or (3). All n for which is_prime[n] 
       == True ARE prime if and only if they are also squarefree! This is checked in the next loop. If n is not 
