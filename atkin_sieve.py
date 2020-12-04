@@ -5,7 +5,7 @@
         atkin_sieve2(*, min_prime=0, max_prime=1)
 
    accepting a lower- and upper limit.
-   """
+"""
 
 import math
 """ Some theoretical notes about the atkin_sieve:
@@ -66,9 +66,9 @@ import math
     
     - The algorithm leaves all even n untouched, since it mutates is_prime[n] only if n is of the forms (1), (2) or (3),
       which is only possible if n is odd.
-    - The algorithm leaves n == 3 untouched, since 3 cannot be written in forms (1), (2) or (3).
-    - Therefore for n==2 and n == 3 (both primes!), is_prime[n] is set to True initially, and never changes. 
-    - For all n > 3, is_prime[n] is initially set to false, to reflect that initially we have an even number of zero 
+    - The algorithm leaves n <= 3 untouched (since 3 cannot be written in forms (1), (2) or (3)).
+    - Therefore for n==2 and n == 3 (both primes!), is_prime[n] must be set to True initially, and never change. 
+    - For all n > 3, is_prime[n] is initially set to false, to reflect that initially we have an even number (zero) 
       solutions (x, y).
     - In the first loop: 
       a) For all (x, y) the value of n = 4x^2 + y^2 (that is, (x, y) is a solution of n = 4x^2 + y^2). Then it checks 
@@ -82,34 +82,21 @@ import math
     - After all (x, y) have been checked, we have is_prime[n] == True if there were an odd number of solutions and 
       is_prime[n] == False if there were an even number of solutions.
     - All n for which is_prime[n] == False are NOT primes. This includes all even numbers (that were initialized to 
-      False and never touched, and all n that could not be expressed as (1), (2) or (3). All n for which is_prime[n] 
-      == True ARE prime if and only if they are also squarefree! This is checked in the next loop. If n is not 
+      False and never touched), and all n that could not be expressed as (1), (2) or (3). All n for which is_prime[n] 
+      == True ARE prime if and only if they are ALSO squarefree! This is checked in the next loop. If n is not 
       squarefree, is_prime[n] is set to False.
-    - After the final check, all n for which is_prime[n] == True are prime, so they are collected in a list and returned
-      to the caller.  
+    - After the 'squarefree' check, all n for which is_prime[n] == True are prime, so they are collected in a list and 
+      returned to the caller.  
 """
 
 
-# def smallest_multiple(factor: int, lower_bound: int) -> int:
-#     """Returns the smallest multiple of factor that is larger than or equal to lower_bound.
-#        Both parameters MUST be integers!"""
-#     # Both params MUST be integers
-#     assert factor % 1 == 0
-#     assert lower_bound % 1 == 0
-#     if (remainder:= lower_bound % factor):
-#         return lower_bound + (factor - remainder)
-#     return lower_bound
-
-
-def atkin_sieve(max_prime):
+def atkin_sieve(max_prime: int) -> list[int]:
     """returns a list of all primes <= max_prime"""
     # D.R.Y. ;-)
     return atkin_sieve2(min_prime=min(max_prime, 0), max_prime=max_prime)
 
-# optimized_overall = 0
 
-
-def atkin_sieve2(min_prime=0, max_prime=-1):
+def atkin_sieve2(min_prime=0, max_prime=-1) -> list[int]:
     """returns a list of all primes >= min_prime and <= max_prime """
 
     if min_prime > max_prime:
@@ -183,11 +170,11 @@ def atkin_sieve2(min_prime=0, max_prime=-1):
 
 
 if __name__ == '__main__':
-    def test_atkin_sieve():
+    def test_atkin_sieve() -> None:
         """tests for the atkin sieve implementation"""
 
         def is_prime(n: int) -> bool:
-            """Returns True if n is a prima, else False"""
+            """Returns True if n is a prime, else False"""
             if n < 2 or n % 1 > 0:
                 return False
             for divisor in range(2, n // 2):
@@ -214,16 +201,17 @@ if __name__ == '__main__':
                 p += 2
             return p
 
-        def test_prime_assertions(primes: list, min_prime, max_prime) -> None:
-            assert all(is_prime(p) for p in primes)
-            assert all(p >= min_prime for p in primes)
-            assert all(p <= max_prime for p in primes)
+        def test_prime_assertions(primes: list, min_prime: int, max_prime: int) -> None:
+            assert all(is_prime(p) for p in primes), f'not all nrs in list are prime.'
+            assert all(p >= min_prime for p in primes), f'not all primes in list are >= min_prime {min_prime}.'
+            assert all(p <= max_prime for p in primes), f'not all primes in list are <= max_prime {max_prime}.'
             if len(primes):
                 assert primes[0] == min_prime or primes[0] == get_prime_gt(min_prime), \
                     f'Expected {primes[0]} == {min_prime} or {primes[0]} == {get_prime_gt(min_prime)}'
-                assert primes[-1] == max_prime or get_prime_gt(primes[-1]) > max_prime
+                assert primes[-1] == max_prime or get_prime_gt(primes[-1]) > max_prime, \
+                    f'Expected {primes[-1]} == {max_prime} or {get_prime_gt(primes[-1])} > {max_prime}'
 
-        def test_for_range(min_p, max_p, expected_sum, expected_nr):
+        def test_for_range(min_p: int, max_p: int, expected_sum: int, expected_nr: int) -> None:
             print(f'\ttesting primes from {min_p} to {max_p}...', end='')
             l1 = atkin_sieve2(min_prime=min_p, max_prime=max_p)
             assert len(l1) == expected_nr
@@ -246,6 +234,7 @@ if __name__ == '__main__':
 
         print('boundary tests:', end='')
         try:
+            # We expect a ValueError when min_prime > max_prime!
             atkin_sieve2(min_prime=1, max_prime=0)
             assert False
         except ValueError:
