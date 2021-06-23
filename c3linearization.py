@@ -21,7 +21,7 @@ def _merge(lists: list[list[Any]]) -> list[Any]:
             if len(lst) and not any(lst[0] in any_list[1::]
                                     for any_list in _lists
                                     if any_list is not lst):
-                # lst has head and it is not in any other list's tail.
+                # we have a head that's not in any other list's tail.
                 _result = [_head := lst[0]]   # Append head of lst to result
                 for any_list in _lists:       # Remove head of lst in any lists
                     if _head in any_list:
@@ -58,11 +58,7 @@ if __name__ == '__main__':
         """Return a list of all __name__'s of classes in cls's __mro__, that
            is, the Python (2.3 and up) linearization).
         """
-
-        return_list = list()
-        for item in cls.__mro__:
-            return_list.append(item.__name__)
-        return return_list
+        return [item.__name__ for item in cls.__mro__]
 
     def _test_complex():
         # a very complex (whaaah...) example:
