@@ -31,7 +31,7 @@ def _merge(lists: list[list[Any]]) -> list[Any]:
             _inconsistency_detected = True
             return _result
 
-        if sum(len(lst) for lst in _lists):  # lists not empty, more to merge.
+        if any(len(lst) for lst in _lists):  # lists not empty, more to merge.
             _result += __merge(_lists)
 
         return [] if _inconsistency_detected else _result
